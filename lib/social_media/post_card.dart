@@ -1,161 +1,111 @@
 import 'package:flutter/material.dart';
 import 'post.dart';
- 
+
 class PostCard extends StatefulWidget {
   final Post post;
- 
-  const PostCard({
-    super.key,
-    required this.post,
-  });
- 
+
+  const PostCard({super.key, required this.post});
+
   @override
   State<PostCard> createState() => _PostCardState();
 }
- 
+
 class _PostCardState extends State<PostCard> {
-  final TextEditingController commentController =
+  final TextEditingController _commentController =
       TextEditingController();
- 
-  final List<String> comments = [];
- 
-  bool isLiked = false;
- 
-  void likePost() {
+
+  void toggleLike() {
     setState(() {
-      isLiked = !isLiked;
+      final post = widget.post;
+      post.isLiked = !post.isLiked;
+      post.likes += post.isLiked ? 1 : -1;
     });
   }
- 
+
   void addComment() {
-    final String comment = commentController.text.trim();
- 
-    if (comment.isEmpty) {
-      return;
-    }
- 
+    final text = _commentController.text.trim();
+    if (text.isEmpty) return;
+
     setState(() {
-      comments.add(comment);
+      widget.post.comments.add(text);
+      _commentController.clear();
     });
- 
-    commentController.clear();
   }
- 
+
   @override
   void dispose() {
-    commentController.dispose();
+    _commentController.dispose();
     super.dispose();
   }
- 
+
   @override
   Widget build(BuildContext context) {
-    final username = widget.post.username.trim();
- 
+    final post = widget.post;
+
     return Card(
-      elevation: 3,
-      margin: const EdgeInsets.only(bottom: 16),
-      clipBehavior: Clip.antiAlias,
+      margin: const EdgeInsets.all(12),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.green,
-              child: Text(
-                username.isEmpty
-                    ? '?'
-                    : username[0].toUpperCase(),
-                style: const TextStyle(
-                  color: Colors.white,
-                ),
-              ),
-            ),
+            leading: const CircleAvatar(child: Icon(Icons.person)),
             title: Text(
-              username,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            subtitle: const Text('Student Feed'),
-          ),
- 
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: Text(
-              widget.post.caption,
-              style: const TextStyle(fontSize: 16),
+              post.username,
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ),
- 
           Image.network(
-            widget.post.imageUrl,
+            post.imageUrl,
             width: double.infinity,
             height: 220,
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
               return const SizedBox(
                 height: 220,
-                child: Center(
-                  child: Icon(
-                    Icons.broken_image,
-                    size: 70,
-                    color: Colors.grey,
-                  ),
-                ),
+                child: Center(child: Icon(Icons.broken_image, size: 48)),
               );
             },
           ),
- 
+          Padding(
+            padding: const EdgeInsets.all(12),
+            child: Text(post.caption),
+          ),
           Row(
             children: [
-              TextButton.icon(
-                onPressed: likePost,
+              IconButton(
+                onPressed: toggleLike,
                 icon: Icon(
-                  isLiked
-                      ? Icons.favorite
-                      : Icons.favorite_border,
-                  color: isLiked ? Colors.red : null,
+                  post.isLiked ? Icons.favorite : Icons.favorite_border,
+                  color: post.isLiked ? Colors.red : null,
                 ),
-                label: Text(isLiked ? 'Liked' : 'Like'),
               ),
-              Text('${comments.length} Comments'),
+              Text('${post.likes}'),
             ],
           ),
- 
-          for (final String comment in comments)
+          for (final comment in post.comments)
             Padding(
-              padding: const EdgeInsets.fromLTRB(
-                16, 4, 16, 4,
-              ),
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Text(comment),
-              ),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 2),
+              child: Text('• $comment'),
             ),
- 
           Padding(
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
-                    controller: commentController,
+                    controller: _commentController,
                     decoration: const InputDecoration(
                       hintText: 'Add a comment...',
                       border: OutlineInputBorder(),
+                      isDense: true,
                     ),
+                    onSubmitted: (_) => addComment(),
                   ),
                 ),
                 IconButton(
                   onPressed: addComment,
                   icon: const Icon(Icons.send),
-                  color: Colors.green,
-                  tooltip: 'Send comment',
                 ),
               ],
             ),
