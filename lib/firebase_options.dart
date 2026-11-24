@@ -57,7 +57,6 @@ class DefaultFirebaseOptions {
     projectId: 'neoda-student-app',
     storageBucket: 'neoda-student-app.firebasestorage.app',
   );
-
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyCyPt8MMX9o1qdgntsb_B_O7ERq6EtzOEY',
     appId: '1:734758976477:ios:a99f23279302d78c66d434',

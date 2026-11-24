@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
- 
+import 'student_crud_page.dart';
+
 class DashboardPage extends StatelessWidget {
   final String username;
- 
+
   const DashboardPage({
     super.key,
     required this.username,
   });
- 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +24,7 @@ class DashboardPage extends StatelessWidget {
             color: Colors.indigo,
           ),
           const SizedBox(height: 16),
- 
+
           Text(
             'Welcome, $username!',
             textAlign: TextAlign.center,
@@ -33,14 +34,14 @@ class DashboardPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
- 
+
           const Text(
             'Explore your student application using '
             'the navigation bar below.',
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
- 
+
           const Card(
             child: Column(
               children: [
@@ -52,7 +53,7 @@ class DashboardPage extends StatelessWidget {
                   ),
                 ),
                 Divider(height: 1),
- 
+
                 ListTile(
                   leading: Icon(Icons.people),
                   title: Text('Social'),
@@ -61,7 +62,7 @@ class DashboardPage extends StatelessWidget {
                   ),
                 ),
                 Divider(height: 1),
- 
+
                 ListTile(
                   leading: Icon(Icons.person),
                   title: Text('Profile'),
@@ -71,6 +72,21 @@ class DashboardPage extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+
+          // New: button that opens the Student CRUD page
+          const SizedBox(height: 20),
+
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const StudentCrudPage(),
+                ),
+              );
+            },
+            icon: const Icon(Icons.storage),
+            label: const Text('Manage Student Records'),
           ),
         ],
       ),
